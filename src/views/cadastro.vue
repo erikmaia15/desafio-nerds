@@ -26,7 +26,8 @@
     <br />
 
     <h3 style="color: white">Listagem de integrantes cadastrados</h3>
-    <section class="listagem-main">
+    <p v-if="usuariosArray.length === 0" style="color: white;">Ainda não há integrantes cadastrados!</p>
+    <section class="listagem-main" v-if="usuariosArray.length > 0">
       <div v-for="usuario in usuariosArray">
         <p>Nome: {{ usuario.nome }}</p>
         <p>Email: {{ usuario.email }}</p>

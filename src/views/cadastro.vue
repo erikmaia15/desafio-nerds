@@ -12,7 +12,7 @@
           inputmode="numeric"
           pattern="[0-9]*"
           minlength="6"
-          maxlength="8"
+          maxlength="6"
           @input="apenasNumeros"
           required
         />
@@ -26,9 +26,13 @@
     <br />
 
     <h3 style="color: white">Listagem de integrantes cadastrados</h3>
-    <p v-if="usuariosArray.length === 0" style="color: white;">Ainda não há integrantes cadastrados!</p>
+    <p v-if="usuariosFiltrados.length === 0" style="color: white">
+      Ainda não há integrantes cadastrados!
+    </p>
     <section class="listagem-main" v-if="usuariosArray.length > 0">
-      <div v-for="usuario in usuariosArray">
+      <label>Filtro dos integrantes por nome:</label>
+      <input type="text" class="input-pesquisa" placeholder="Digite um nome " v-model="filtro" />
+      <div v-for="usuario in usuariosFiltrados">
         <p>Nome: {{ usuario.nome }}</p>
         <p>Email: {{ usuario.email }}</p>
         <p>Matrícula: {{ usuario.matricula }}</p>
@@ -37,13 +41,20 @@
   </section>
 </template>
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import usuarios from "@/service/usuarios";
 const nome = ref("");
 const email = ref("");
 const resposta = ref("");
 const matricula = ref("");
 const usuariosArray = ref([]);
+const filtro = ref("");
+const usuariosFiltrados = computed(() =>
+  usuariosArray.value.filter((usuario) =>
+    usuario.nome?.toLowerCase().includes(filtro.value.toLowerCase())
+  )
+);
+
 async function cadastrarUsuario() {
   const formData = {
     nome: nome.value,
@@ -134,6 +145,19 @@ onMounted(async () => {
   border-color: #4f46e5;
 }
 
+.input-pesquisa {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 14px;
+  transition: border 0.3s;
+}
+
+.input-pesquisa input:focus {
+  border-color: #4f46e5;
+}
+
 .btn-cadastro {
   margin-top: 10px;
   padding: 10px;
@@ -163,6 +187,9 @@ onMounted(async () => {
   padding: 20px;
   background: #fff;
   border-radius: 10px;
+  & input {
+    margin-bottom: 10px;
+  }
 }
 
 .listagem-main div {
